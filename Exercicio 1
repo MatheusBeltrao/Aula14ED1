@@ -1,0 +1,177 @@
+class Node {
+    int data;
+    Node prev;
+    Node next;
+    
+    public Node(int data) {
+        this.data = data;
+        this.prev = null;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    Node head;
+    Node tail;
+    
+    public LinkedList() {
+        head = null;
+        tail = null;
+    }
+    
+    public void add(int data) {
+        Node newNode = new Node(data);
+        
+        if (head == null) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        }
+    }
+    
+    public void display() {
+        Node current = head;
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+    
+    public void concatenar(LinkedList list) {
+        if (list.head != null) {
+            if (head == null) {
+                head = list.head;
+                tail = list.tail;
+            } else {
+                tail.next = list.head;
+                list.head.prev = tail;
+                tail = list.tail;
+            }
+        }
+    }
+    
+    public LinkedList[] separar(int position) {
+        LinkedList[] separatedLists = new LinkedList[2];
+        separatedLists[0] = new LinkedList(); // Lista 1
+        separatedLists[1] = new LinkedList(); // Lista 2
+        
+        if (position <= 0 || position >= size()) {
+            separatedLists[0] = this;
+        } else {
+            int count = 1;
+            Node current = head;
+            
+            while (count < position) {
+                current = current.next;
+                count++;
+            }
+            
+            separatedLists[0].head = head;
+            separatedLists[0].tail = current;
+            separatedLists[1].head = current.next;
+            separatedLists[1].tail = tail;
+            
+            current.next.prev = null;
+            current.next = null;
+        }
+        
+        return separatedLists;
+    }
+    
+    public LinkedList intercalar(LinkedList list) {
+        LinkedList mergedList = new LinkedList();
+        
+        Node current1 = head;
+        Node current2 = list.head;
+        
+        while (current1 != null && current2 != null) {
+            if (current1.data <= current2.data) {
+                mergedList.add(current1.data);
+                current1 = current1.next;
+            } else {
+                mergedList.add(current2.data);
+                current2 = current2.next;
+            }
+        }
+        
+        while (current1 != null) {
+            mergedList.add(current1.data);
+            current1 = current1.next;
+        }
+        
+        while (current2 != null) {
+            mergedList.add(current2.data);
+            current2 = current2.next;
+        }
+        
+        return mergedList;
+    }
+    
+    public int size() {
+        int count = 0;
+        Node current = head;
+        
+        while (current != null) {
+            count++;
+            current = current.next;
+        }
+        
+        return count;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        LinkedList list1 = new LinkedList();
+        list1.add(1);
+        list1.add(3);
+        list1.add(5);
+        list1.add(7);
+        
+        LinkedList list2 = new LinkedList();
+        list2.add(2);
+        list2.add(4);
+        list2.add(6);
+        list2.add(8);
+        
+        System.out.println("Lista 1:");
+        list1.display();
+        
+        System.out.println("Lista 2:");
+        list2.display();
+
+        list1.concatenar(list2);
+
+        System.out.println("Lista concatenada:");
+        list1.display();
+
+        LinkedList[] separatedLists = list1.separar(3);
+        LinkedList separatedList1 = separatedLists[0];
+        LinkedList separatedList2 = separatedLists[1];
+        
+        System.out.println("Lista 1 separada:");
+        separatedList1.display();
+        
+        System.out.println("Lista 2 separada:");
+        separatedList2.display();
+        
+        LinkedList sortedList1 = new LinkedList();
+        sortedList1.add(2);
+        sortedList1.add(4);
+        sortedList1.add(6);
+        
+        LinkedList sortedList2 = new LinkedList();
+        sortedList2.add(1);
+        sortedList2.add(3);
+        sortedList2.add(5);
+        
+        LinkedList mergedList = sortedList1.intercalar(sortedList2);
+        
+        System.out.println("Lista intercalada:");
+        mergedList.display();
+    }
+}
