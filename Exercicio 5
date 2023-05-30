@@ -1,0 +1,162 @@
+class Node {
+    int data;
+    Node next;
+    
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class CircularLinkedList {
+    Node head;
+    
+    public CircularLinkedList() {
+        head = new Node(-1); 
+        head.next = head;
+    }
+    
+    public int countElements() {
+        int count = 0;
+        Node current = head.next;
+        
+        while (current != head) {
+            count++;
+            current = current.next;
+        }
+        
+        return count;
+    }
+    
+    public void insertLeft(int data) {
+        Node newNode = new Node(data);
+        newNode.next = head.next;
+        head.next = newNode;
+    }
+
+    public void concatenate(CircularLinkedList list) {
+        if (head.next == head) {
+            head.next = list.head.next;
+        } else if (list.head.next != list.head) {
+            Node temp = head.next;
+            head.next = list.head.next;
+            Node lastNode = list.head;
+            
+            while (lastNode.next != list.head) {
+                lastNode = lastNode.next;
+            }
+            
+            lastNode.next = temp;
+        }
+    }
+    
+    public CircularLinkedList mergeSortedLists(CircularLinkedList list) {
+        CircularLinkedList mergedList = new CircularLinkedList();
+        
+        Node current1 = head.next;
+        Node current2 = list.head.next;
+        
+        while (current1 != head && current2 != list.head) {
+            if (current1.data <= current2.data) {
+                mergedList.insertLeft(current1.data);
+                current1 = current1.next;
+            } else {
+                mergedList.insertLeft(current2.data);
+                current2 = current2.next;
+            }
+        }
+        
+        while (current1 != head) {
+            mergedList.insertLeft(current1.data);
+            current1 = current1.next;
+        }
+        
+        while (current2 != list.head) {
+            mergedList.insertLeft(current2.data);
+            current2 = current2.next;
+        }
+        
+        return mergedList;
+    }
+    
+    public CircularLinkedList copy() {
+        CircularLinkedList newList = new CircularLinkedList();
+        
+        Node current = head.next;
+        
+        while (current != head) {
+            newList.insertLeft(current.data);
+            current = current.next;
+        }
+        
+        return newList;
+    }
+
+    public void display() {
+        if (head.next == head) {
+            System.out.println("Lista vazia");
+        } else {
+            Node current = head.next;
+            
+            while (current != head) {
+                System.out.print(current.data + " ");
+                current = current.next;
+            }
+            
+            System.out.println();
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+ 
+        CircularLinkedList list1 = new CircularLinkedList();
+        list1.insertLeft(10);
+        list1.insertLeft(20);
+        list1.insertLeft(30);
+        
+        CircularLinkedList list2 = new CircularLinkedList();
+        list2.insertLeft(40);
+        list2.insertLeft(50);
+        list2.insertLeft(60);
+        
+
+        System.out.println("Lista 1:");
+        list1.display();
+        
+        System.out.println("Lista 2:");
+        list2.display();
+
+        System.out.println("Número de elementos na Lista 1: " + list1.countElements());
+        System.out.println("Número de elementos na Lista 2: " + list2.countElements());
+        
+        list1.insertLeft(5);
+        System.out.println("Lista 1 após a inserção à esquerda da cabeça:");
+        list1.display();
+        
+        list1.concatenate(list2);
+        System.out.println("Lista 1 após a concatenação com a Lista 2:");
+        list1.display();
+        System.out.println("Número de elementos na Lista 1: " + list1.countElements());
+
+        CircularLinkedList sortedList1 = new CircularLinkedList();
+        sortedList1.insertLeft(10);
+        sortedList1.insertLeft(20);
+        sortedList1.insertLeft(30);
+        
+        CircularLinkedList sortedList2 = new CircularLinkedList();
+        sortedList2.insertLeft(40);
+        sortedList2.insertLeft(50);
+        sortedList2.insertLeft(60);
+        
+        CircularLinkedList mergedList = sortedList1.mergeSortedLists(sortedList2);
+        System.out.println("Lista intercalada:");
+        mergedList.display();
+        
+        CircularLinkedList copyList = list1.copy();
+        System.out.println("Cópia da Lista 1:");
+        copyList.display();
+        System.out.println("Número de elementos na Lista copiada: " + copyList.countElements());
+    }
+}
