@@ -1,0 +1,181 @@
+class Node {
+    int data;
+    Node next;
+    
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class CircularLinkedList {
+    Node head;
+    
+    public CircularLinkedList() {
+        head = null;
+    }
+    
+    public boolean isEmpty() {
+        return head == null;
+    }
+
+    public int countElements() {
+        if (isEmpty()) {
+            return 0;
+        }
+        
+        int count = 0;
+        Node current = head;
+        
+        do {
+            count++;
+            current = current.next;
+        } while (current != head);
+        
+        return count;
+    }
+    
+    public void display() {
+        if (isEmpty()) {
+            System.out.println("A lista está vazia.");
+            return;
+        }
+        
+        Node current = head;
+        
+        do {
+            System.out.print(current.data + " ");
+            current = current.next;
+        } while (current != head);
+        
+        System.out.println();
+    }
+    
+    public void insertLeftOfHead(int value) {
+        Node newNode = new Node(value);
+        
+        if (isEmpty()) {
+            head = newNode;
+            head.next = head;
+        } else {
+            newNode.next = head;
+            
+            Node current = head;
+            while (current.next != head) {
+                current = current.next;
+            }
+            
+            current.next = newNode;
+            head = newNode;
+        }
+    }
+
+    public void concatenate(CircularLinkedList list) {
+        if (isEmpty()) {
+            head = list.head;
+        } else if (!list.isEmpty()) {
+            Node current = head;
+            
+            while (current.next != head) {
+                current = current.next;
+            }
+            
+            current.next = list.head;
+            
+            Node listCurrent = list.head;
+            while (listCurrent.next != list.head) {
+                listCurrent = listCurrent.next;
+            }
+            
+            listCurrent.next = head;
+        }
+    }
+    
+    public CircularLinkedList mergeSortedLists(CircularLinkedList list) {
+        CircularLinkedList mergedList = new CircularLinkedList();
+        
+        if (isEmpty()) {
+            mergedList.head = list.head;
+        } else if (!list.isEmpty()) {
+            Node current1 = head;
+            Node current2 = list.head;
+            
+            do {
+                if (current1.data <= current2.data) {
+                    mergedList.insertLeftOfHead(current1.data);
+                    current1 = current1.next;
+                } else {
+                    mergedList.insertLeftOfHead(current2.data);
+                    current2 = current2.next;
+                }
+            } while (current1 != head && current2 != list.head);
+            
+            while (current1 != head) {
+                mergedList.insertLeftOfHead(current1.data);
+                current1 = current1.next;
+            }
+            
+            while (current2 != list.head) {
+                mergedList.insertLeftOfHead(current2.data);
+                current2 = current2.next;
+            }
+        }
+        
+        return mergedList;
+    }
+    
+    public CircularLinkedList copy() {
+        CircularLinkedList copiedList = new CircularLinkedList();
+        
+        if (!isEmpty()) {
+            Node current = head;
+            
+            do {
+                copiedList.insertLeftOfHead(current.data);
+                current = current.next;
+            } while (current != head);
+        }
+        
+        return copiedList;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        CircularLinkedList list1 = new CircularLinkedList();
+        list1.insertLeftOfHead(10);
+        list1.insertLeftOfHead(20);
+        list1.insertLeftOfHead(30);
+        
+        CircularLinkedList list2 = new CircularLinkedList();
+        list2.insertLeftOfHead(40);
+        list2.insertLeftOfHead(50);
+        list2.insertLeftOfHead(60);
+        
+        System.out.println("Lista 1:");
+        list1.display();
+        System.out.println("Número de elementos na Lista 1: " + list1.countElements());
+        
+        System.out.println("\nLista 2:");
+        list2.display();
+        System.out.println("Número de elementos na Lista 2: " + list2.countElements());
+        
+        list1.insertLeftOfHead(5);
+        System.out.println("\nLista 1 após a inserção à esquerda da cabeça:");
+        list1.display();
+        
+        list1.concatenate(list2);
+        System.out.println("\nLista 1 após a concatenação com a Lista 2:");
+        list1.display();
+        System.out.println("Número de elementos na Lista 1: " + list1.countElements());
+        
+        CircularLinkedList mergedList = list1.mergeSortedLists(list2);
+        System.out.println("\nLista intercalada:");
+        mergedList.display();
+        
+        CircularLinkedList copiedList = list1.copy();
+        System.out.println("\nCópia da Lista 1:");
+        copiedList.display();
+        System.out.println("Número de elementos na Lista copiada: " + copiedList.countElements());
+    }
+}
