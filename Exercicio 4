@@ -1,0 +1,182 @@
+class Node {
+    int data;
+    Node prev;
+    Node next;
+    
+    public Node(int data) {
+        this.data = data;
+        this.prev = null;
+        this.next = null;
+    }
+}
+
+class CircularDoublyLinkedList {
+    Node head;
+    
+    public CircularDoublyLinkedList() {
+        head = null;
+    }
+    
+    public int countElements() {
+        if (head == null) {
+            return 0;
+        }
+        
+        int count = 0;
+        Node current = head;
+        
+        do {
+            count++;
+            current = current.next;
+        } while (current != head);
+        
+        return count;
+    }
+    
+    public void insertLeft(int data) {
+        Node newNode = new Node(data);
+        
+        if (head == null) {
+            head = newNode;
+            newNode.next = newNode;
+            newNode.prev = newNode;
+        } else {
+            newNode.next = head;
+            newNode.prev = head.prev;
+            head.prev.next = newNode;
+            head.prev = newNode;
+            head = newNode;
+        }
+    }
+    
+    public void concatenate(CircularDoublyLinkedList list) {
+        if (list.head != null) {
+            if (head == null) {
+                head = list.head;
+            } else {
+                Node temp = head.prev;
+                head.prev = list.head.prev;
+                list.head.prev.next = head;
+                list.head.prev = temp;
+                temp.next = list.head;
+            }
+        }
+    }
+    
+    public CircularDoublyLinkedList mergeSortedLists(CircularDoublyLinkedList list) {
+        CircularDoublyLinkedList mergedList = new CircularDoublyLinkedList();
+        
+        if (head == null) {
+            mergedList.head = list.head;
+        } else if (list.head == null) {
+            mergedList.head = head;
+        } else {
+            Node current1 = head;
+            Node current2 = list.head;
+            
+            while (current1.next != head && current2.next != list.head) {
+                if (current1.data <= current2.data) {
+                    mergedList.insertLeft(current1.data);
+                    current1 = current1.next;
+                } else {
+                    mergedList.insertLeft(current2.data);
+                    current2 = current2.next;
+                }
+            }
+            
+            while (current1.next != head) {
+                mergedList.insertLeft(current1.data);
+                current1 = current1.next;
+            }
+            
+            while (current2.next != list.head) {
+                mergedList.insertLeft(current2.data);
+                current2 = current2.next;
+            }
+        }
+        
+        return mergedList;
+    }
+    
+    public CircularDoublyLinkedList copy() {
+        CircularDoublyLinkedList newList = new CircularDoublyLinkedList();
+        
+        if (head != null) {
+            Node current = head;
+            
+            do {
+                newList.insertLeft(current.data);
+                current = current.next;
+            } while (current != head);
+        }
+        
+        return newList;
+    }
+    
+    public void display() {
+        if (head == null) {
+            System.out.println("Lista vazia");
+        } else {
+            Node current = head;
+            
+            do {
+                System.out.print(current.data + " ");
+                current = current.next;
+            } while (current != head);
+            
+            System.out.println();
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+ 
+        CircularDoublyLinkedList list1 = new CircularDoublyLinkedList();
+        list1.insertLeft(10);
+        list1.insertLeft(20);
+        list1.insertLeft(30);
+        
+        CircularDoublyLinkedList list2 = new CircularDoublyLinkedList();
+        list2.insertLeft(40);
+        list2.insertLeft(50);
+        list2.insertLeft(60);
+        
+        System.out.println("Lista 1:");
+        list1.display();
+        
+        System.out.println("Lista 2:");
+        list2.display();
+        
+        System.out.println("Número de elementos na Lista 1: " + list1.countElements());
+        System.out.println("Número de elementos na Lista 2: " + list2.countElements());
+        
+        list1.insertLeft(5);
+        System.out.println("Lista 1 após a inserção à esquerda da cabeça:");
+        list1.display();
+        
+        list1.concatenate(list2);
+        System.out.println("Lista 1 após a concatenação com a Lista 2:");
+        list1.display();
+        System.out.println("Número de elementos na Lista 1: " + list1.countElements());
+
+        CircularDoublyLinkedList sortedList1 = new CircularDoublyLinkedList();
+        sortedList1.insertLeft(10);
+        sortedList1.insertLeft(20);
+        sortedList1.insertLeft(30);
+        
+        CircularDoublyLinkedList sortedList2 = new CircularDoublyLinkedList();
+        sortedList2.insertLeft(40);
+        sortedList2.insertLeft(50);
+        sortedList2.insertLeft(60);
+
+        CircularDoublyLinkedList mergedList = sortedList1.mergeSortedLists(sortedList2);
+        System.out.println("Lista intercalada:");
+        mergedList.display();
+        
+        CircularDoublyLinkedList copyList = list1.copy();
+        System.out.println("Cópia da Lista 1:");
+        copyList.display();
+        System.out.println("Número de elementos na Lista copiada: " + copyList.countElements());
+    }
+}
