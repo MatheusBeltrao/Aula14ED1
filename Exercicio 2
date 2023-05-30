@@ -1,0 +1,113 @@
+class Node {
+    int data;
+    Node prev;
+    Node next;
+    
+    public Node(int data) {
+        this.data = data;
+        this.prev = null;
+        this.next = null;
+    }
+}
+
+class DoublyLinkedList {
+    Node head;
+    Node tail;
+    
+    public DoublyLinkedList() {
+        head = new Node(-1); // Nó cabeça
+        tail = new Node(-1); // Nó cauda
+        
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    public boolean isEmpty() {
+        return head.next == tail;
+    }
+    
+    public void display() {
+        if (isEmpty()) {
+            System.out.println("A lista está vazia.");
+            return;
+        }
+        
+        Node current = head.next;
+        while (current != tail) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+    
+
+    public boolean search(int value) {
+        Node current = head.next;
+        
+        while (current != tail) {
+            if (current.data == value) {
+                return true;
+            }
+            current = current.next;
+        }
+        
+        return false;
+    }
+    
+    public void insertAtBeginning(int value) {
+        Node newNode = new Node(value);
+        
+        newNode.next = head.next;
+        newNode.prev = head;
+        head.next.prev = newNode;
+        head.next = newNode;
+    }
+    
+    public void insertAtEnd(int value) {
+        Node newNode = new Node(value);
+        
+        newNode.next = tail;
+        newNode.prev = tail.prev;
+        tail.prev.next = newNode;
+        tail.prev = newNode;
+    }
+    
+    public void delete(int value) {
+        Node current = head.next;
+        
+        while (current != tail) {
+            if (current.data == value) {
+                current.prev.next = current.next;
+                current.next.prev = current.prev;
+                break;
+            }
+            current = current.next;
+        }
+    }
+}
+
+public class Lista {
+    public static void main(String[] args) {
+        DoublyLinkedList list = new DoublyLinkedList();
+        
+        list.insertAtEnd(10);
+        list.insertAtEnd(20);
+        list.insertAtEnd(30);
+        
+        System.out.println("Lista inicial:");
+        list.display();
+        
+        System.out.println("Buscar 20: " + list.search(20));
+        System.out.println("Buscar 40: " + list.search(40));
+        
+        list.insertAtBeginning(5);
+        
+        System.out.println("Lista após a inserção no início:");
+        list.display();
+        
+        list.delete(20);
+        
+        System.out.println("Lista após a remoção:");
+        list.display();
+    }
+}
